@@ -37,11 +37,13 @@ export async function POST(request: NextRequest) {
       { success: true, user: { id: user.id, email: user.email, name: user.name } },
       { status: 201 }
     )
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Registration error:', error)
-    const message = error instanceof Error ? error.message : 'Terjadi kesalahan saat registrasi'
+    const message = error instanceof Error ? error.message : String(error)
+    // Include stack trace in development only
+    const detail = process.env.NODE_ENV !== 'production' && error instanceof Error ? error.stack : undefined
     return NextResponse.json(
-      { error: message },
+      { error: message, detail },
       { status: 500 }
     )
   }
