@@ -1,4 +1,4 @@
-import { auth } from '@/app/api/auth/[...nextauth]/route'
+import { auth } from '@/auth'
 import { PrismaClient } from '@prisma/client'
 import { verifyPassword, hashPassword } from '@/lib/auth'
 import { NextResponse } from 'next/server'
