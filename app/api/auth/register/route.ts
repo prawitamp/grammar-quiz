@@ -32,14 +32,16 @@ export async function POST(request: NextRequest) {
     // Create new user
     const user = await createUser(email, password, name)
 
+
     return NextResponse.json(
       { success: true, user: { id: user.id, email: user.email, name: user.name } },
       { status: 201 }
     )
   } catch (error) {
     console.error('Registration error:', error)
+    const message = error instanceof Error ? error.message : 'Terjadi kesalahan saat registrasi'
     return NextResponse.json(
-      { error: 'Terjadi kesalahan saat registrasi' },
+      { error: message },
       { status: 500 }
     )
   }
