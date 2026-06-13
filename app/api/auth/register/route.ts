@@ -1,0 +1,46 @@
+import { createUser, getUserByEmail } from '@/lib/auth'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function POST(request: NextRequest) {
+  try {
+    const { email, password, name } = await request.json()
+
+    // Validation
+    if (!email || !password || !name) {
+      return NextResponse.json(
+        { error: 'Email, password, dan nama harus diisi' },
+        { status: 400 }
+      )
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: 'Password minimal 6 karakter' },
+        { status: 400 }
+      )
+    }
+
+    // Check if user already exists
+    const existingUser = await getUserByEmail(email)
+    if (existingUser) {
+      return NextResponse.json(
+        { error: 'Email sudah terdaftar' },
+        { status: 400 }
+      )
+    }
+
+    // Create new user
+    const user = await createUser(email, password, name)
+
+    return NextResponse.json(
+      { success: true, user: { id: user.id, email: user.email, name: user.name } },
+      { status: 201 }
+    )
+  } catch (error) {
+    console.error('Registration error:', error)
+    return NextResponse.json(
+      { error: 'Terjadi kesalahan saat registrasi' },
+      { status: 500 }
+    )
+  }
+}
