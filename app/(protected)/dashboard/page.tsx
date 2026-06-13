@@ -141,6 +141,22 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Traktir Eskrim */}
+      <div className="mb-6 sm:mb-10">
+        <a href="https://teer.id/prawitamp" target="_blank" rel="noopener noreferrer" className="block">
+          <Card className="bg-gradient-to-br from-blue-50 to-cyan-100 border-2 border-cyan-300 p-4 sm:p-6 text-center hover:scale-105 transform cursor-pointer transition-all">
+            <div className="text-4xl sm:text-5xl mb-3">🍦</div>
+            <h3 className="text-lg sm:text-2xl font-display font-bold mb-2 text-cyan-800">
+              Traktir Eskrim untuk Developer 🍦
+            </h3>
+            <p className="text-sm sm:text-base font-semibold text-cyan-700">
+              Kalau aplikasi ini membantu belajarmu, boleh banget traktir eskrim biar aku makin semangat! 😊
+              <p>Langsung KLIK aja ya disiniii~ maaciw </p>
+            </p>
+          </Card>
+        </a>
+      </div>
+
       {/* Quick Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
         <Link href="/game">

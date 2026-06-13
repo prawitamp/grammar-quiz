@@ -1,22 +1,21 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Card, Button, Badge } from '@/components/ui'
+import { Card, Badge, Button } from '@/components/ui'
 import { useSession } from 'next-auth/react'
 
 const AVATAR_KEY = 'grammarquiz_avatar'
 
 export default function ProfilePage() {
-  const { data: session, update } = useSession()
-  const [activeTab, setActiveTab] = useState<'profile' | 'password'>('profile')
+  const { data: session } = useSession()
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [passLoading, setPassLoading] = useState(false)
   const [passMsg, setPassMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const saved = localStorage.getItem(AVATAR_KEY)
@@ -74,7 +73,7 @@ export default function ProfilePage() {
       return
     }
 
-    setLoading(true)
+    setPassLoading(true)
     try {
       const res = await fetch('/api/auth/change-password', {
         method: 'POST',
@@ -93,7 +92,7 @@ export default function ProfilePage() {
     } catch {
       setPassMsg({ type: 'error', text: 'Terjadi error. Coba lagi!' })
     } finally {
-      setLoading(false)
+      setPassLoading(false)
     }
   }
 
@@ -130,83 +129,58 @@ export default function ProfilePage() {
         <p className="text-sm sm:text-base text-gray-500 font-semibold">{user.email}</p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 sm:mb-8 justify-center">
-        <button
-          onClick={() => setActiveTab('profile')}
-          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-display font-bold transition-all text-sm sm:text-base ${activeTab === 'profile'
-            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-playful'
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-        >
-          👤 Profile
-        </button>
-        <button
-          onClick={() => setActiveTab('password')}
-          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-display font-bold transition-all text-sm sm:text-base ${activeTab === 'password'
-            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-playful'
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-        >
-          🔒 Password
-        </button>
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
+        <Card variant="gradient" className="text-center p-3 sm:p-6">
+          <div className="text-2xl sm:text-4xl font-display font-bold">{user.totalXP || 0}</div>
+          <p className="text-xs font-semibold opacity-90">Total XP</p>
+        </Card>
+        <Card variant="warm" className="text-center p-3 sm:p-6">
+          <div className="text-2xl sm:text-4xl font-display font-bold">{user.streak || 0}</div>
+          <p className="text-xs font-semibold opacity-90">🔥 Streak</p>
+        </Card>
+        <Card variant="success" className="text-center p-3 sm:p-6">
+          <div className="text-2xl sm:text-4xl font-display font-bold">{user.accuracy || 0}%</div>
+          <p className="text-xs font-semibold opacity-90">Accuracy</p>
+        </Card>
+        <Card className="text-center p-3 sm:p-6">
+          <div className="text-2xl sm:text-4xl font-display font-bold text-gradient">Lv.{user.level || 1}</div>
+          <p className="text-xs font-semibold text-gray-600">Level</p>
+        </Card>
       </div>
 
-      {activeTab === 'profile' && (
-        <>
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
-            <Card variant="gradient" className="text-center p-3 sm:p-6">
-              <div className="text-2xl sm:text-4xl font-display font-bold">{user.totalXP || 0}</div>
-              <p className="text-xs font-semibold opacity-90">Total XP</p>
-            </Card>
-            <Card variant="warm" className="text-center p-3 sm:p-6">
-              <div className="text-2xl sm:text-4xl font-display font-bold">{user.streak || 0}</div>
-              <p className="text-xs font-semibold opacity-90">🔥 Streak</p>
-            </Card>
-            <Card variant="success" className="text-center p-3 sm:p-6">
-              <div className="text-2xl sm:text-4xl font-display font-bold">{user.accuracy || 0}%</div>
-              <p className="text-xs font-semibold opacity-90">Accuracy</p>
-            </Card>
-            <Card className="text-center p-3 sm:p-6">
-              <div className="text-2xl sm:text-4xl font-display font-bold text-gradient">Lv.{user.level || 1}</div>
-              <p className="text-xs font-semibold text-gray-600">Level</p>
-            </Card>
+      {/* Info */}
+      <Card>
+        <h2 className="text-2xl font-display font-bold mb-6">📋 Info Profile</h2>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+            <span className="font-semibold text-gray-600">Nama</span>
+            <span className="font-bold">{user.name}</span>
           </div>
+          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+            <span className="font-semibold text-gray-600">Email</span>
+            <span className="font-bold">{user.email}</span>
+          </div>
+          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+            <span className="font-semibold text-gray-600">Level</span>
+            <Badge variant="primary">Level {user.level || 1}</Badge>
+          </div>
+          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+            <span className="font-semibold text-gray-600">Status</span>
+            <Badge variant="success">Aktif ✅</Badge>
+          </div>
+        </div>
+      </Card>
 
-          {/* Info */}
-          <Card>
-            <h2 className="text-2xl font-display font-bold mb-6">📋 Info Profile</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
-                <span className="font-semibold text-gray-600">Nama</span>
-                <span className="font-bold">{user.name}</span>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
-                <span className="font-semibold text-gray-600">Email</span>
-                <span className="font-bold">{user.email}</span>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
-                <span className="font-semibold text-gray-600">Level</span>
-                <Badge variant="primary">Level {user.level || 1}</Badge>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
-                <span className="font-semibold text-gray-600">Status</span>
-                <Badge variant="success">Aktif ✅</Badge>
-              </div>
-            </div>
-          </Card>
-
-          {message && (
-            <div className={`mt-4 p-4 rounded-xl font-semibold ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-              }`}>
-              {message.text}
-            </div>
-          )}
-        </>
+      {message && (
+        <div className={`mt-4 p-4 rounded-xl font-semibold ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+          }`}>
+          {message.text}
+        </div>
       )}
 
-      {activeTab === 'password' && (
+      {/* Ganti Password */}
+      <div className="mt-8 sm:mt-12">
         <Card>
           <h2 className="text-2xl font-display font-bold mb-6">🔒 Ganti Password</h2>
           <form onSubmit={handleChangePassword} className="space-y-6">
@@ -256,12 +230,12 @@ export default function ProfilePage() {
               </div>
             )}
 
-            <Button variant="primary" block size="lg" isLoading={loading}>
+            <Button variant="primary" block size="lg" isLoading={passLoading}>
               Simpan Password 🔒
             </Button>
           </form>
         </Card>
-      )}
+      </div>
     </div>
   )
 }

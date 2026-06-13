@@ -44,30 +44,3 @@ export interface Achievement {
   icon: string
   unlockedAt: Date | null
 }
-
-// NextAuth Session Types
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      id: string
-      email: string
-      name: string
-      totalXP: number
-      streak: number
-      accuracy: number
-      level: number
-    }
-  }
-
-  interface User {
-    id: string
-    email: string
-    name: string
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    id: string
-  }
-}

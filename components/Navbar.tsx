@@ -88,10 +88,6 @@ export function Navbar() {
                         className="flex items-center gap-3 px-4 py-3 hover:bg-purple-50 transition-colors font-semibold text-gray-700">
                         <span className="text-xl">👤</span><span>Profile</span>
                       </Link>
-                      <Link href="/profile" onClick={() => setIsAkunOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-purple-50 transition-colors font-semibold text-gray-700">
-                        <span className="text-xl">🔒</span><span>Ganti Password</span>
-                      </Link>
                       <div className="border-t border-gray-100 my-1" />
                       <button onClick={() => signOut({ redirectTo: '/' })}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors font-semibold text-red-600 w-full text-left">
@@ -133,10 +129,6 @@ export function Navbar() {
             <Link href="/profile" onClick={() => setIsMobileOpen(false)}
               className="block px-4 py-3 text-purple-600 hover:bg-purple-50 font-semibold font-display rounded-xl transition-colors text-base">
               👤 Profile
-            </Link>
-            <Link href="/profile" onClick={() => setIsMobileOpen(false)}
-              className="block px-4 py-3 text-purple-600 hover:bg-purple-50 font-semibold font-display rounded-xl transition-colors text-base">
-              🔒 Ganti Password
             </Link>
             <div className="border-t border-gray-100 my-2" />
             <button onClick={() => signOut({ redirectTo: '/' })}

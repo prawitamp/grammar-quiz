@@ -1,7 +1,5 @@
 import { hash, compare } from 'bcryptjs'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from './prisma'
 
 /**
  * Hash password untuk keamanan

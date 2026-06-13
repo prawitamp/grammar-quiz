@@ -33,11 +33,6 @@ export default function LandingPage() {
               Mulai Sekarang 🎉
             </Button>
           </Link>
-          <Link href="/auth/login">
-            <Button variant="secondary" size="lg">
-              Login
-            </Button>
-          </Link>
         </div>
       </div>
 
